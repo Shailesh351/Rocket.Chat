@@ -12,8 +12,8 @@ import { settings } from '../../app/settings';
 import { callbacks } from '../../app/callbacks';
 
 Meteor.methods({
-	updateMessage(message) {
-		if (!Meteor.userId()) {
+	updateMessage(message, offlineTriggered = false) {
+		if (!Meteor.userId() || offlineTriggered) {
 			return false;
 		}
 
@@ -80,8 +80,7 @@ Meteor.methods({
 			ChatMessage.update({
 				_id: message._id,
 				'u._id': Meteor.userId(),
-			}, { $set: messageObject });
-			CachedChatMessage.save();
+			}, { $set: messageObject }, null, CachedChatMessage.save);
 		});
 	},
 });
